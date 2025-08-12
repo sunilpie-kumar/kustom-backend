@@ -12,6 +12,7 @@ import {
   updateProviderProfile,
 } from '../controller/providerController.js';
 import { authenticateToken, requireProvider, rateLimit } from '../middleware/auth.js';
+import { sendResponse } from '../utils/responseFunction.js';
 
 const router = express.Router();
 
@@ -24,6 +25,9 @@ router.post('/login', rateLimit(15 * 60 * 1000, 10), providerLogin);
 // Protected routes (specific routes first)
 router.get('/profile', authenticateToken, requireProvider, getProviderProfile);
 router.put('/profile', authenticateToken, requireProvider, updateProviderProfile);
+router.get('/me', authenticateToken, (req, res) => {
+  return sendResponse(res, 200, true, 'Session valid', { principal: req.user });
+});
 
 // Admin routes (for managing providers)
 router.post('/', authenticateToken, createProvider);

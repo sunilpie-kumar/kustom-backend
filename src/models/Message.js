@@ -14,15 +14,15 @@ const MessageSchema = new mongoose.Schema(
   {
     conversationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation', required: true, index: true },
     senderType: { type: String, enum: ['user', 'provider'], required: true },
-    senderId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    senderId: { type: String, required: true },
     receiverType: { type: String, enum: ['user', 'provider'], required: true },
-    receiverId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    receiverId: { type: String, required: true },
     content: { type: String, default: '' },
     attachments: { type: [AttachmentSchema], default: [] },
     readBy: [
       {
         readerType: { type: String, enum: ['user', 'provider'], required: true },
-        readerId: { type: mongoose.Schema.Types.ObjectId, required: true },
+        readerId: { type: String, required: true },
         readAt: { type: Date, default: Date.now },
       },
     ],
