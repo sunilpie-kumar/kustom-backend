@@ -21,8 +21,11 @@ import serviceRoutes from './routes/serviceRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import otpRoutes from './routes/otpRoutes.js';
 import twilioRoutes from './routes/twilioRoutes.js';
+import chatRoutes from './routes/chatRoutes.js';
 
 import { errorHandler } from "./middelware/errorHandler.js";
+import uploadRoutes from './routes/uploadRoutes.js';
+import { initSocket } from './realtime/socket.js'
 
 // ******************************************* Config *********************************************
 
@@ -79,6 +82,9 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/twilio', twilioRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/uploads', express.static('uploads'))
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -98,6 +104,8 @@ const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 
 connectDB().then(() => {
+  // Initialize Socket.IO
+  initSocket(server, { origin: allowedOrigins })
   server.listen(PORT, () => {
     console.log(`
               #####################################################
