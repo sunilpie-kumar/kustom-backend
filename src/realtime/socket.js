@@ -38,7 +38,9 @@ export const initSocket = (server, corsOptions = {}) => {
     })
 
     socket.on('chat:typing', ({ conversationId, isTyping = true }) => {
-      if (conversationId) io.to(`conversation:${conversationId}`).emit('chat:typing', { conversationId, from: socket.user, isTyping })
+      if (!conversationId) return
+      // prevent echo back to sender by using rooms and leaving sender out is non-trivial here; client filters by convo id and ignores own type
+      io.to(`conversation:${conversationId}`).emit('chat:typing', { conversationId, from: socket.user, isTyping })
     })
 
     socket.on('disconnect', () => {})

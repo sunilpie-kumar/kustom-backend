@@ -1,5 +1,8 @@
 import Conversation from '../models/Conversation.js'
 import Message from '../models/Message.js'
+import User from '../models/User.js'
+import Provider from '../models/Provider.js'
+import mongoose from 'mongoose'
 import { sendResponse } from '../utils/responseFunction.js'
 import { getIO } from '../realtime/socket.js'
 
@@ -52,7 +55,28 @@ export const getConversations = async (req, res) => {
           senderType: { $ne: me.participantType },
           senderId: { $ne: me.participantId },
         })
-        return { ...c.toObject(), lastMessage, unreadCount }
+
+        // Build a friendly title for the other participant
+        const participants = c.participants || []
+        const other = participants.find(p => p.participantType !== me.participantType)
+        let title = undefined
+        if (other) {
+          if (other.participantType === 'user') {
+            let u = null
+            if (mongoose.Types.ObjectId.isValid(String(other.participantId))) {
+              u = await User.findById(other.participantId).select('fullName email')
+            }
+            title = u?.fullName || u?.email || 'User'
+          } else if (other.participantType === 'provider') {
+            let p = null
+            if (mongoose.Types.ObjectId.isValid(String(other.participantId))) {
+              p = await Provider.findById(other.participantId).select('companyName fullName')
+            }
+            title = p?.companyName || p?.fullName || 'Provider'
+          }
+        }
+
+        return { ...c.toObject(), lastMessage, unreadCount, title }
       })
     )
 
@@ -90,7 +114,9 @@ export const sendMessage = async (req, res) => {
     // Emit realtime event to the conversation room
     const io = getIO()
     if (io) {
+      // Emit to the conversation room for both parties; clients handle de-dupe and own-message logic
       io.to(`conversation:${conversationId}`).emit('chat:new_message', { message: msg })
+      // Also notify the receiver personally (for list updates if not in the room)
       io.to(`${receiverType}:${receiverId}`).emit('chat:notify', { conversationId, message: msg })
     }
     return sendResponse(res, 201, true, 'Message sent', { message: msg })
