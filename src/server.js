@@ -23,6 +23,8 @@ import otpRoutes from './routes/otpRoutes.js';
 import twilioRoutes from './routes/twilioRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import promptRoutes from './routes/promptRoutes.js';
+import uploadMediaRoutes from './routes/uploadMediaRoutes.js';
 import { seedInitialData } from './utils/seed.js';
 
 import { errorHandler } from "./middelware/errorHandler.js";
@@ -87,6 +89,8 @@ app.use('/api/otp', otpRoutes);
 app.use('/api/twilio', twilioRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/prompts', promptRoutes);
+app.use('/api/uploads', uploadMediaRoutes);
 app.use('/uploads', express.static('uploads'))
 
 // 404 handler
