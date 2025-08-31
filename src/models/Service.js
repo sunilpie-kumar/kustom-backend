@@ -15,8 +15,8 @@ const serviceSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    required: [true, 'Service category is required'],
-    enum: ['Technology', 'Healthcare', 'Finance', 'Education', 'Home Services', 'Beauty & Wellness', 'Transportation', 'Other'],
+    required: [true, 'Service category is required'], // holds category key from Categories collection
+    trim: true,
   },
   subcategory: {
     type: String,

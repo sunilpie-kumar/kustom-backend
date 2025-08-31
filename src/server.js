@@ -22,6 +22,8 @@ import bookingRoutes from './routes/bookingRoutes.js';
 import otpRoutes from './routes/otpRoutes.js';
 import twilioRoutes from './routes/twilioRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
+import { seedInitialData } from './utils/seed.js';
 
 import { errorHandler } from "./middelware/errorHandler.js";
 import uploadRoutes from './routes/uploadRoutes.js';
@@ -53,8 +55,8 @@ const corsOptions = {
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
-  methods: ['GET','HEAD','PUT','PATCH','POST','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type','Authorization','X-Requested-With'],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   optionsSuccessStatus: 204,
 };
 
@@ -79,6 +81,7 @@ app.get('/health', (req, res) => {
 app.use('/api/providers', providerRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/twilio', twilioRoutes);
@@ -103,7 +106,13 @@ const server = http.createServer(app);
 
 const PORT = process.env.PORT || 3000;
 
-connectDB().then(() => {
+connectDB().then(async () => {
+  try {
+    if (process.env.SEED_DEFAULTS === 'true') {
+      await seedInitialData();
+      console.log('Default seed completed');
+    }
+  } catch (e) { console.error('Seed failed:', e); }
   // Initialize Socket.IO
   initSocket(server, { origin: allowedOrigins })
   server.listen(PORT, () => {

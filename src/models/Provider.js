@@ -15,9 +15,8 @@ const providerSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    required: [true, 'Category is required'],
-    enum: ['Technology', 'Healthcare', 'Finance', 'Education', 'Other'],
-    default: 'Other',
+    required: [true, 'Category is required'], // holds category key from Categories collection
+    trim: true,
   },
   licenseNumber: {
     type: String,
@@ -62,6 +61,17 @@ const providerSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
     default: null,
+  },
+  description: {
+    type: String,
+    default: '',
+    trim: true,
+    maxlength: [1000, 'Description cannot exceed 1000 characters'],
+  },
+  price: {
+    type: String,
+    default: '',
+    trim: true,
   },
   businessHours: {
     monday: { open: String, close: String },
