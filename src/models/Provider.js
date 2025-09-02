@@ -39,6 +39,24 @@ const providerSchema = new mongoose.Schema({
     trim: true,
     match: [/^\+?[\d\s-]{10,}$/, 'Please enter a valid phone number'],
   },
+  serviceType: {
+    type: String,
+    default: null,
+    trim: true,
+    maxlength: [100, 'Service type cannot exceed 100 characters'],
+  },
+  experienceYears: {
+    type: Number,
+    default: 1,
+    min: 0,
+    max: 60,
+  },
+  location: {
+    type: String,
+    default: '',
+    trim: true,
+    maxlength: [200, 'Location cannot exceed 200 characters'],
+  },
   address: {
     street: String,
     city: String,

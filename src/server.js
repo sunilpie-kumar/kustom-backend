@@ -25,6 +25,7 @@ import chatRoutes from './routes/chatRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import promptRoutes from './routes/promptRoutes.js';
 import uploadMediaRoutes from './routes/uploadMediaRoutes.js';
+import appointmentRoutes from './routes/appointmentRoutes.js';
 import { seedInitialData } from './utils/seed.js';
 
 import { errorHandler } from "./middelware/errorHandler.js";
@@ -91,6 +92,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/prompts', promptRoutes);
 app.use('/api/uploads', uploadMediaRoutes);
+app.use('/api/appointments', appointmentRoutes);
 app.use('/uploads', express.static('uploads'))
 
 // 404 handler

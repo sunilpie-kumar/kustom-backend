@@ -7,7 +7,8 @@ const UploadSchema = new mongoose.Schema(
     originalName: { type: String, required: true },
     mimeType: { type: String, required: true },
     size: { type: Number, required: true },
-    path: { type: String, required: true },
+    // Store binary data directly in MongoDB for MVP
+    data: { type: Buffer, required: true },
   },
   { timestamps: true }
 )

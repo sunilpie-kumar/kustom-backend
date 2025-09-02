@@ -29,7 +29,19 @@ export const authenticateToken = async (req, res, next) => {
       if (!provider) {
         return sendResponse(res, 401, false, 'Invalid token - provider not found');
       }
-      req.user = { providerId: provider._id, email: provider.email, type: 'provider' };
+      req.user = {
+        providerId: provider._id,
+        email: provider.email,
+        type: 'provider',
+        fullName: provider.fullName,
+        companyName: provider.companyName,
+        profilePicture: provider.profilePicture,
+        phone: provider.phone,
+        serviceType: provider.serviceType || provider.category,
+        location: provider.location || (provider.address ? [provider.address.city, provider.address.state].filter(Boolean).join(', ') : undefined),
+        experienceYears: provider.experienceYears,
+        memberSince: provider.createdAt,
+      };
     }
     else {
       return sendResponse(res, 401, false, 'Invalid token format');
